@@ -10,6 +10,8 @@ defmodule TodoistIntegration.IntegrationContent.Task do
     field :user_id, :binary_id
     field :integration_source_id, :binary_id
 
+    belongs_to :user, TodoistIntegration.Accounts.User
+
     timestamps()
   end
 

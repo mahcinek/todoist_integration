@@ -7,6 +7,11 @@ defmodule TodoistIntegration.Accounts.User do
   schema "users" do
     field :email, :string
 
+    has_many :integration_source_users,
+             TodoistIntegration.IntegrationSourceUsers.IntegrationSourceUser
+
+    has_many :integration_sources, through: [:integration_source_users, :integration_source]
+    has_many :tasks, TodoistIntegration.IntegrationContent.Task
     timestamps()
   end
 
