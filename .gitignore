@@ -38,4 +38,4 @@ todoist_integration_app-*.tar
 # variables.
 /config/*.secret.exs
 
-\.elixir_ls/
+/.elixir_ls/
