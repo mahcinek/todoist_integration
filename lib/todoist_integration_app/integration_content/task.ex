@@ -7,10 +7,9 @@ defmodule TodoistIntegration.IntegrationContent.Task do
   schema "tasks" do
     field :name, :string
     field :remote_id, :integer
-    field :user_id, :binary_id
-    field :integration_source_id, :binary_id
 
     belongs_to :user, TodoistIntegration.Accounts.User
+    belongs_to :integration_source, TodoistIntegration.IntegrationSources.IntegreationSource
 
     timestamps()
   end

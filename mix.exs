@@ -45,7 +45,8 @@ defmodule TodoistIntegration.MixProject do
       {:tesla, "~> 1.3.0"},
       {:ex_machina, "~> 2.3"},
       {:espec, "~> 1.8.1", only: :test},
-      {:bypass, "~> 1.0", only: :test}
+      {:bypass, "~> 1.0", only: :test},
+      {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false}
     ]
   end
 
