@@ -7,7 +7,9 @@ defmodule TodoistIntegration.Repo.Migrations.CreateTasks do
       add :remote_id, :integer
       add :name, :text
       add :user_id, references(:users, on_delete: :nothing, type: :binary_id)
-      add :integration_source_id, references(:integration_sources, on_delete: :nothing, type: :binary_id)
+
+      add :integration_source_id,
+          references(:integration_sources, on_delete: :nothing, type: :binary_id)
 
       timestamps()
     end

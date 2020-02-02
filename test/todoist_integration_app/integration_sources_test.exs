@@ -26,39 +26,58 @@ defmodule TodoistIntegration.IntegrationSourcesTest do
 
     test "get_integreation_source!/1 returns the integreation_source with given id" do
       integreation_source = integreation_source_fixture()
-      assert IntegrationSources.get_integreation_source!(integreation_source.id) == integreation_source
+
+      assert IntegrationSources.get_integreation_source!(integreation_source.id) ==
+               integreation_source
     end
 
     test "create_integreation_source/1 with valid data creates a integreation_source" do
-      assert {:ok, %IntegreationSource{} = integreation_source} = IntegrationSources.create_integreation_source(@valid_attrs)
+      assert {:ok, %IntegreationSource{} = integreation_source} =
+               IntegrationSources.create_integreation_source(@valid_attrs)
+
       assert integreation_source.name == "some name"
     end
 
     test "create_integreation_source/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = IntegrationSources.create_integreation_source(@invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} =
+               IntegrationSources.create_integreation_source(@invalid_attrs)
     end
 
     test "update_integreation_source/2 with valid data updates the integreation_source" do
       integreation_source = integreation_source_fixture()
-      assert {:ok, %IntegreationSource{} = integreation_source} = IntegrationSources.update_integreation_source(integreation_source, @update_attrs)
+
+      assert {:ok, %IntegreationSource{} = integreation_source} =
+               IntegrationSources.update_integreation_source(integreation_source, @update_attrs)
+
       assert integreation_source.name == "some updated name"
     end
 
     test "update_integreation_source/2 with invalid data returns error changeset" do
       integreation_source = integreation_source_fixture()
-      assert {:error, %Ecto.Changeset{}} = IntegrationSources.update_integreation_source(integreation_source, @invalid_attrs)
-      assert integreation_source == IntegrationSources.get_integreation_source!(integreation_source.id)
+
+      assert {:error, %Ecto.Changeset{}} =
+               IntegrationSources.update_integreation_source(integreation_source, @invalid_attrs)
+
+      assert integreation_source ==
+               IntegrationSources.get_integreation_source!(integreation_source.id)
     end
 
     test "delete_integreation_source/1 deletes the integreation_source" do
       integreation_source = integreation_source_fixture()
-      assert {:ok, %IntegreationSource{}} = IntegrationSources.delete_integreation_source(integreation_source)
-      assert_raise Ecto.NoResultsError, fn -> IntegrationSources.get_integreation_source!(integreation_source.id) end
+
+      assert {:ok, %IntegreationSource{}} =
+               IntegrationSources.delete_integreation_source(integreation_source)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        IntegrationSources.get_integreation_source!(integreation_source.id)
+      end
     end
 
     test "change_integreation_source/1 returns a integreation_source changeset" do
       integreation_source = integreation_source_fixture()
-      assert %Ecto.Changeset{} = IntegrationSources.change_integreation_source(integreation_source)
+
+      assert %Ecto.Changeset{} =
+               IntegrationSources.change_integreation_source(integreation_source)
     end
   end
 end

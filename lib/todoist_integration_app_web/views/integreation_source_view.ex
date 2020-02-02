@@ -11,7 +11,6 @@ defmodule TodoistIntegrationWeb.IntegreationSourceView do
   end
 
   def render("integreation_source.json", %{integreation_source: integreation_source}) do
-    %{id: integreation_source.id,
-      name: integreation_source.name}
+    %{id: integreation_source.id, name: integreation_source.name}
   end
 end

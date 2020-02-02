@@ -8,6 +8,5 @@ defmodule TodoistIntegration.Repo.Migrations.CreateIntegrationSources do
 
       timestamps()
     end
-
   end
 end

@@ -12,10 +12,14 @@ defmodule TodoistIntegrationWeb.IntegreationSourceController do
   end
 
   def create(conn, %{"integreation_source" => integreation_source_params}) do
-    with {:ok, %IntegreationSource{} = integreation_source} <- IntegrationSources.create_integreation_source(integreation_source_params) do
+    with {:ok, %IntegreationSource{} = integreation_source} <-
+           IntegrationSources.create_integreation_source(integreation_source_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.integreation_source_path(conn, :show, integreation_source))
+      |> put_resp_header(
+        "location",
+        Routes.integreation_source_path(conn, :show, integreation_source)
+      )
       |> render("show.json", integreation_source: integreation_source)
     end
   end
@@ -28,7 +32,11 @@ defmodule TodoistIntegrationWeb.IntegreationSourceController do
   def update(conn, %{"id" => id, "integreation_source" => integreation_source_params}) do
     integreation_source = IntegrationSources.get_integreation_source!(id)
 
-    with {:ok, %IntegreationSource{} = integreation_source} <- IntegrationSources.update_integreation_source(integreation_source, integreation_source_params) do
+    with {:ok, %IntegreationSource{} = integreation_source} <-
+           IntegrationSources.update_integreation_source(
+             integreation_source,
+             integreation_source_params
+           ) do
       render(conn, "show.json", integreation_source: integreation_source)
     end
   end
@@ -36,7 +44,8 @@ defmodule TodoistIntegrationWeb.IntegreationSourceController do
   def delete(conn, %{"id" => id}) do
     integreation_source = IntegrationSources.get_integreation_source!(id)
 
-    with {:ok, %IntegreationSource{}} <- IntegrationSources.delete_integreation_source(integreation_source) do
+    with {:ok, %IntegreationSource{}} <-
+           IntegrationSources.delete_integreation_source(integreation_source) do
       send_resp(conn, :no_content, "")
     end
   end

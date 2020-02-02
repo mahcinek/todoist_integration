@@ -30,7 +30,11 @@ defmodule TodoistIntegrationWeb.IntegreationSourceControllerTest do
 
   describe "create integreation_source" do
     test "renders integreation_source when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.integreation_source_path(conn, :create), integreation_source: @create_attrs)
+      conn =
+        post(conn, Routes.integreation_source_path(conn, :create),
+          integreation_source: @create_attrs
+        )
+
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.integreation_source_path(conn, :show, id))
@@ -42,7 +46,11 @@ defmodule TodoistIntegrationWeb.IntegreationSourceControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.integreation_source_path(conn, :create), integreation_source: @invalid_attrs)
+      conn =
+        post(conn, Routes.integreation_source_path(conn, :create),
+          integreation_source: @invalid_attrs
+        )
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -50,8 +58,15 @@ defmodule TodoistIntegrationWeb.IntegreationSourceControllerTest do
   describe "update integreation_source" do
     setup [:create_integreation_source]
 
-    test "renders integreation_source when data is valid", %{conn: conn, integreation_source: %IntegreationSource{id: id} = integreation_source} do
-      conn = put(conn, Routes.integreation_source_path(conn, :update, integreation_source), integreation_source: @update_attrs)
+    test "renders integreation_source when data is valid", %{
+      conn: conn,
+      integreation_source: %IntegreationSource{id: id} = integreation_source
+    } do
+      conn =
+        put(conn, Routes.integreation_source_path(conn, :update, integreation_source),
+          integreation_source: @update_attrs
+        )
+
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
       conn = get(conn, Routes.integreation_source_path(conn, :show, id))
@@ -62,8 +77,15 @@ defmodule TodoistIntegrationWeb.IntegreationSourceControllerTest do
              } = json_response(conn, 200)["data"]
     end
 
-    test "renders errors when data is invalid", %{conn: conn, integreation_source: integreation_source} do
-      conn = put(conn, Routes.integreation_source_path(conn, :update, integreation_source), integreation_source: @invalid_attrs)
+    test "renders errors when data is invalid", %{
+      conn: conn,
+      integreation_source: integreation_source
+    } do
+      conn =
+        put(conn, Routes.integreation_source_path(conn, :update, integreation_source),
+          integreation_source: @invalid_attrs
+        )
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -71,7 +93,10 @@ defmodule TodoistIntegrationWeb.IntegreationSourceControllerTest do
   describe "delete integreation_source" do
     setup [:create_integreation_source]
 
-    test "deletes chosen integreation_source", %{conn: conn, integreation_source: integreation_source} do
+    test "deletes chosen integreation_source", %{
+      conn: conn,
+      integreation_source: integreation_source
+    } do
       conn = delete(conn, Routes.integreation_source_path(conn, :delete, integreation_source))
       assert response(conn, 204)
 
