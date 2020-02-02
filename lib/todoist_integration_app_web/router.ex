@@ -3,8 +3,8 @@ defmodule TodoistIntegrationWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-    resources "/users", UserController, except: [:new, :edit]
-    resources "/tasks", TaskController, only: [:create, :delete, :update]
+    resources "/users", UserController, only: [:index]
+    resources "/tasks", TaskController, only: [:update]
   end
 
   scope "/api", TodoistIntegrationWeb do
