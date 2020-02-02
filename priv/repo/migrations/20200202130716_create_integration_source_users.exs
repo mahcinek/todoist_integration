@@ -9,6 +9,8 @@ defmodule TodoistIntegration.Repo.Migrations.CreateIntegrationSourceUsers do
       add :integration_source_id,
           references(:integration_sources, on_delete: :nothing, type: :binary_id)
 
+      add :source_api_key, :text
+
       timestamps()
     end
 

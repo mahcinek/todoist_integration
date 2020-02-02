@@ -7,6 +7,7 @@ defmodule TodoistIntegration.IntegrationSourceUsers.IntegrationSourceUser do
   schema "integration_source_users" do
     field :user_id, :binary_id
     field :integration_source_id, :binary_id
+    field :source_api_key, :string
 
     belongs_to :user, TodoistIntegration.Accounts.User
     belongs_to :integration_source, TodoistIntegration.IntegrationsSources.IntegrationSource
