@@ -24,6 +24,11 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+# Secrets should be kept in env and added dynamically, but for brevity is visible in git
+config :my_app, MyApp.Guardian,
+      issuer: "todoist_integration_app",
+      secret_key: "fnOzYnD9c9eEbbWWGaskaUt5glYxV1jwgIBBxQIt0G0EGkmCdVOpB8roWsTKO6dO"
+
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 

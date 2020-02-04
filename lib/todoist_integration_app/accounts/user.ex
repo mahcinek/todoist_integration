@@ -6,6 +6,7 @@ defmodule TodoistIntegration.Accounts.User do
   @foreign_key_type :binary_id
   schema "users" do
     field :email, :string
+    field :auth_token, :string, virtual: true
 
     has_many :integration_source_users,
              TodoistIntegration.IntegrationSourceUsers.IntegrationSourceUser

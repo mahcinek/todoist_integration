@@ -3,11 +3,15 @@ defmodule TodoistIntegrationWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-    resources "/users", UserController, only: [:index]
-    resources "/tasks", TaskController, only: [:update]
+  end
+
+  pipeline :jwt_authenticated do
+    plug AAPiwek.Guardian.AuthPipeline
   end
 
   scope "/api", TodoistIntegrationWeb do
-    pipe_through :api
+    pipe_through [:jwt_authenticated, :api]
+    resources "/users", UserController, only: [:index]
+    resources "/tasks", TaskController, only: [:update]
   end
 end

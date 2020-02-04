@@ -5,6 +5,7 @@ defmodule TodoistIntegration.Accounts do
 
   import Ecto.Query, warn: false
   alias TodoistIntegration.Repo
+  alias TodoistIntegration.Guardian
 
   alias TodoistIntegration.Accounts.User
 
@@ -18,7 +19,9 @@ defmodule TodoistIntegration.Accounts do
 
   """
   def list_users do
-    Repo.all(User)
+    User
+    |> with_auth_token()
+    |> Repo.all()
   end
 
   @doc """
@@ -35,7 +38,11 @@ defmodule TodoistIntegration.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id) do
+    User
+    |> with_auth_token()
+    |> Repo.get!(id)
+  end
 
   @doc """
   Creates a user.
@@ -100,5 +107,32 @@ defmodule TodoistIntegration.Accounts do
   """
   def change_user(%User{} = user) do
     User.changeset(user, %{})
+  end
+
+  @doc """
+  Returns a token for given user. Token works for one day.
+  Currently there is no endpoint for refreshing tokens/getting new ones for
+  exisitng user. In normal application that should be implemented.
+
+  ## Examples
+
+      iex> create_token(author)
+      {:ok, "asddsadsasazxc"}
+
+  """
+  defp create_token(%User{} = user) do
+    case Guardian.encode_and_sign(user, %{}, ttl: {1, :day}) do
+      {:ok, token, _claims} ->
+        {:ok, token}
+      {_} ->
+        {:error, ""}
+    end
+  end
+
+  def with_auth_token(%User{} = user) do
+    case create_token(user) do
+      {:ok, token} -> %{user | auth_token: token}
+      _ -> %{user | auth_token: nil}
+    end
   end
 end
