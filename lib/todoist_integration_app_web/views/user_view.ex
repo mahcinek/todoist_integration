@@ -11,6 +11,6 @@ defmodule TodoistIntegrationWeb.UserView do
   end
 
   def render("user.json", %{user: user}) do
-    %{id: user.id, email: user.email}
+    %{id: user.id, email: user.email, auth_token: user.auth_token}
   end
 end
