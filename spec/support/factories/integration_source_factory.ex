@@ -1,4 +1,4 @@
-defmodule TodoistIntegrationSpec.IntegrationSourceFactory do
+defmodule TodoistIntegrationSpec.IntegreationSourceFactory do
   @moduledoc false
 
   defmacro __using__(_opts) do

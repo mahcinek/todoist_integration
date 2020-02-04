@@ -1,14 +1,14 @@
-defmodule TodoistIntegrationSpec.IntegrationSourceFactory do
+defmodule TodoistIntegrationSpec.TaskFactory do
   @moduledoc false
 
   defmacro __using__(_opts) do
     quote do
       TodoistIntegration.IntegrationContent.Task
 
-      def integration_source_factory do
+      def task_factory do
         %Task{
           name: sequence(:external_key, &"Task #{&1}"),
-          remote_id: sequence(:external_key, &1),
+          remote_id: 123
         }
       end
     end

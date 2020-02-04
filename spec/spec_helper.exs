@@ -1,13 +1,11 @@
 ESpec.configure fn(config) ->
-  config.before fn(tags) ->
-    {:shared, hello: :world, tags: tags}
+  config.before fn(_tags) ->
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(TodoistIntegration.Repo)
   end
 
   config.finally fn(_shared) ->
-    :ok
+    Ecto.Adapters.SQL.Sandbox.checkin(TodoistIntegration.Repo, [])
   end
 end
-Code.require_file("spec/phoenix_helper.exs")
-Code.require_file("spec/shared/return_401_response_spec.exs")
-
 {:ok, _} = Application.ensure_all_started(:ex_machina)
+Code.require_file("spec/phoenix_helper.exs")

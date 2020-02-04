@@ -25,7 +25,7 @@ config :logger, :console,
   metadata: [:request_id]
 
 # Secrets should be kept in env and added dynamically, but for brevity is visible in git
-config :my_app, MyApp.Guardian,
+config :todoist_integration_app, TodoistIntegration.Guardian,
       issuer: "todoist_integration_app",
       secret_key: "fnOzYnD9c9eEbbWWGaskaUt5glYxV1jwgIBBxQIt0G0EGkmCdVOpB8roWsTKO6dO"
 

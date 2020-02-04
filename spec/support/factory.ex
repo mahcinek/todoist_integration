@@ -4,8 +4,7 @@ defmodule TodoistIntegrationSpec.Factory do
   use ExMachina.Ecto, repo: TodoistIntegration.Repo
 
   use TodoistIntegrationSpec.{
-    UserFactory
-    IntegrationSourceFactory
-    TaskFactory
+    UserFactory,
+    IntegreationSourceFactory
   }
 end
