@@ -20,8 +20,8 @@ defmodule TodoistIntegration.Accounts do
   """
   def list_users do
     User
-    |> with_auth_token()
     |> Repo.all()
+    |> with_auth_token()
   end
 
   @doc """
@@ -40,8 +40,13 @@ defmodule TodoistIntegration.Accounts do
   """
   def get_user!(id) do
     User
-    |> with_auth_token()
     |> Repo.get!(id)
+  end
+
+  def get_user_with_auth_token!(id) do
+    User
+    |> Repo.get!(id)
+    |> with_auth_token()
   end
 
   @doc """
@@ -134,5 +139,10 @@ defmodule TodoistIntegration.Accounts do
       {:ok, token} -> %{user | auth_token: token}
       _ -> %{user | auth_token: nil}
     end
+  end
+
+  def with_auth_token(users) do
+    users
+    |> Enum.map(fn u -> with_auth_token(u) end)
   end
 end

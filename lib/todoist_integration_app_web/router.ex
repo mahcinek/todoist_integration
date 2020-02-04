@@ -1,12 +1,13 @@
 defmodule TodoistIntegrationWeb.Router do
   use TodoistIntegrationWeb, :router
+  alias TodoistIntegration.Guardian
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
   pipeline :jwt_authenticated do
-    plug AAPiwek.Guardian.AuthPipeline
+    plug Guardian.AuthPipeline
   end
 
   scope "/api", TodoistIntegrationWeb do
