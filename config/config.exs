@@ -26,11 +26,14 @@ config :logger, :console,
 
 # Secrets should be kept in env and added dynamically, but for brevity is visible in git
 config :todoist_integration_app, TodoistIntegration.Guardian,
-      issuer: "todoist_integration_app",
-      secret_key: "fnOzYnD9c9eEbbWWGaskaUt5glYxV1jwgIBBxQIt0G0EGkmCdVOpB8roWsTKO6dO"
+  issuer: "todoist_integration_app",
+  secret_key: "fnOzYnD9c9eEbbWWGaskaUt5glYxV1jwgIBBxQIt0G0EGkmCdVOpB8roWsTKO6dO"
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+# Adapter for Tesla
+config :tesla, :adapter, Tesla.Adapter.Hackney
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

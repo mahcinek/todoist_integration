@@ -129,6 +129,7 @@ defmodule TodoistIntegration.Accounts do
     case Guardian.encode_and_sign(user, %{}, ttl: {1, :day}) do
       {:ok, token, _claims} ->
         {:ok, token}
+
       {_} ->
         {:error, ""}
     end

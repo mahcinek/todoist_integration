@@ -45,6 +45,7 @@ defmodule TodoistIntegration.MixProject do
       {:cors_plug, "~> 2.0"},
       {:guardian, "~> 2.0"},
       {:tesla, "~> 1.3.0"},
+      {:hackney, "~> 1.10"},
       {:ex_machina, "~> 2.3"},
       {:espec, "~> 1.8.1", only: :test},
       {:espec_phoenix, "~> 0.7.1", only: :test},
