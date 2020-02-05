@@ -2,8 +2,8 @@ use Mix.Config
 
 # Configure your database
 config :todoist_integration_app, TodoistIntegration.Repo,
-  username: "posrgres",
-  password: "postgres",
+  username: "mpiwek",
+  password: "piwek",
   database: "todoist_integration_app_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,

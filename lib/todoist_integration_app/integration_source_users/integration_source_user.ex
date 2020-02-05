@@ -16,7 +16,7 @@ defmodule TodoistIntegration.IntegrationSourceUsers.IntegrationSourceUser do
   @doc false
   def changeset(integration_source_user, attrs) do
     integration_source_user
-    |> cast(attrs, [])
-    |> validate_required([])
+    |> cast(attrs, [:source_api_key])
+    |> validate_required([:source_api_key])
   end
 end
