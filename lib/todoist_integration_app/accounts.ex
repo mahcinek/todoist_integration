@@ -6,8 +6,11 @@ defmodule TodoistIntegration.Accounts do
   import Ecto.Query, warn: false
   alias TodoistIntegration.Repo
   alias TodoistIntegration.Guardian
+  alias TodoistIntegration.IntegrationContent
 
   alias TodoistIntegration.Accounts.User
+
+  @preload_source_associations [integration_source_users: [:integration_source]]
 
   @doc """
   Returns the list of users.
@@ -22,6 +25,11 @@ defmodule TodoistIntegration.Accounts do
     User
     |> Repo.all()
     |> with_auth_token()
+  end
+
+  def list_users_without_token do
+    User
+    |> Repo.all()
   end
 
   @doc """
@@ -145,5 +153,22 @@ defmodule TodoistIntegration.Accounts do
   def with_auth_token(users) do
     users
     |> Enum.map(fn u -> with_auth_token(u) end)
+  end
+
+  defp preload_source_associations(query) do
+    query |> Repo.preload(@preload_source_associations)
+  end
+
+  def synch_all do
+    list_users()
+    |> preload_source_associations()
+    |> Enum.each(synch())
+  end
+
+  def synch(user) do
+    user.integration_source_users
+    |> Enum.each(fn isu ->
+      IntegrationContent.deal_with_tasks(isu.integration_source, user, isu.source_api_key)
+    end)
   end
 end

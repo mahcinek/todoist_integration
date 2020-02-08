@@ -5,6 +5,7 @@ defmodule TodoistIntegration.IntegrationSources do
 
   import Ecto.Query, warn: false
   alias TodoistIntegration.Repo
+  alias TodoistIntegration.Accounts
 
   alias TodoistIntegration.IntegrationSources.IntegreationSource
 
@@ -100,5 +101,14 @@ defmodule TodoistIntegration.IntegrationSources do
   """
   def change_integreation_source(%IntegreationSource{} = integreation_source) do
     IntegreationSource.changeset(integreation_source, %{})
+  end
+
+  def get_tasks(token, integration_source_name) do
+    apply(
+      "TodoistIntegration.IntegrationSources.Connections." <>
+        Macro.camelize(integration_source_name),
+      "call",
+      token
+    )
   end
 end

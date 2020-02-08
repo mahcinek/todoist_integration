@@ -10,9 +10,17 @@ defmodule TodoistIntegrationWeb.Router do
     plug Guardian.AuthPipeline
   end
 
+  scope "/unsecureapi", TodoistIntegrationWeb do
+    pipe_through [:api]
+    resources "/users", UserController, only: [:index]
+  end
+
   scope "/api", TodoistIntegrationWeb do
     pipe_through [:jwt_authenticated, :api]
-    resources "/users", UserController, only: [:index]
-    resources "/tasks", TaskController, only: [:update]
+    post("/synch", TaskController, :synch)
+
+    resources "/tasks", TaskController, only: [:update] do
+      get("/search", TaskController, :search)
+    end
   end
 end

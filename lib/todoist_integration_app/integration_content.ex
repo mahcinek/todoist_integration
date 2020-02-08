@@ -5,6 +5,7 @@ defmodule TodoistIntegration.IntegrationContent do
 
   import Ecto.Query, warn: false
   alias TodoistIntegration.Repo
+  alias TodoistIntegration.IntegrationSources
   alias TodoistIntegration.IntegrationSources.Connections.Todoist
 
   alias TodoistIntegration.IntegrationContent.Task
@@ -103,10 +104,16 @@ defmodule TodoistIntegration.IntegrationContent do
     Task.changeset(task, %{})
   end
 
-  def download_tasks(base_url, user_token) do
-    base_url
-    |> Todoist.client(user_token)
-    |> Todoist.get_tasks()
-    |> Enum.map(fn t -> %Task{name: Map.get(t, "content"), remote_id: Map.get(t, "id")} end)
+  def deal_with_tasks(integration_source, user, token) do
+    tasks = IntegrationSources.get_tasks(integration_source.name, token)
+    insert_tasks(tasks, user, integration_source)
+  end
+
+  defp insert_tasks(tasks, user, integration_source) do
+    tasks
+    |> Enum.map(fn t ->
+      %{task | user_id: user.id, integration_source_id: integration_source.id}
+    end)
+    |> Repo.insert!()
   end
 end

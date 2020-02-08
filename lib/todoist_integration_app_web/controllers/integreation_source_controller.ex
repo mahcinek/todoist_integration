@@ -2,6 +2,7 @@ defmodule TodoistIntegrationWeb.IntegreationSourceController do
   use TodoistIntegrationWeb, :controller
 
   alias TodoistIntegration.IntegrationSources
+  alias TodoistIntegration.Accounts
   alias TodoistIntegration.IntegrationSources.IntegreationSource
 
   action_fallback TodoistIntegrationWeb.FallbackController
@@ -9,6 +10,11 @@ defmodule TodoistIntegrationWeb.IntegreationSourceController do
   def index(conn, _params) do
     integration_sources = IntegrationSources.list_integration_sources()
     render(conn, "index.json", integration_sources: integration_sources)
+  end
+
+  def synch(conn, _params) do
+    Accounts.sych_all()
+    send_resp(conn, :ok, "")
   end
 
   def show(conn, %{"id" => id}) do
