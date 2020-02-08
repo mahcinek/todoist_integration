@@ -23,3 +23,4 @@ user = %TodoistIntegration.Accounts.User{
 }
 
 TodoistIntegration.Repo.insert!(user)
+TodoistIntegration.Accounts.synch_all()

@@ -23,6 +23,15 @@ defmodule TodoistIntegration.IntegrationContent do
     Repo.all(Task)
   end
 
+  def list_tasks_by_user_and_integration_source(user_id, integration_source_id) do
+    Task
+    |> where(
+      [task],
+      task.user_id == ^user_id and task.integration_source_id == ^integration_source_id
+    )
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single task.
 
@@ -105,9 +114,33 @@ defmodule TodoistIntegration.IntegrationContent do
   end
 
   def deal_with_tasks(integration_source, user, token) do
-    tasks = IntegrationSources.get_tasks(integration_source.name, token)
-    insert_tasks(tasks, user, integration_source)
-    tasks
+    tasks_form_integration = IntegrationSources.get_tasks(integration_source.name, token)
+    local_tasks = list_tasks_by_user_and_integration_source(user.id, integration_source.id)
+
+    task_from_integration_ids = Enum.map(tasks_form_integration, fn t -> t.remote_id end)
+    local_task_ids = Enum.map(local_tasks, fn t -> t.remote_id end)
+
+    task_ids_to_delete = local_task_ids -- task_from_integration_ids
+
+    local_tasks_after_removal =
+      Enum.filter(local_tasks, fn t -> t.remote_id not in task_ids_to_delete end)
+
+    task_ids_to_update = local_task_ids -- task_ids_to_delete
+
+    {tasks_to_update, tasks_to_insert} =
+      Enum.split_with(tasks_form_integration, fn t -> t.remote_id in task_ids_to_update end)
+
+    a =
+      Ecto.Multi.new()
+      |> Ecto.Multi.delete_all(:delete_all, find_tasks_to_delete(task_ids_to_delete))
+      |> Ecto.Multi.append(insert_tasks(tasks_to_insert, user, integration_source))
+      |> Ecto.Multi.append(update_tasks(tasks_to_update, local_tasks_after_removal))
+      |> Repo.transaction()
+
+    case a do
+      {:ok, multi_info} -> {:ok, parse_multi_info(multi_info)}
+      {:error, errors} -> {:error, errors}
+    end
   end
 
   defp insert_tasks(tasks, user, integration_source) do
@@ -122,13 +155,35 @@ defmodule TodoistIntegration.IntegrationContent do
         })
       end)
 
-    IO.inspect(tasks)
+    Ecto.Multi.new()
+    |> Ecto.Multi.insert_all(:insert_all, Task, tasks)
+  end
 
-    Task
-    |> Repo.insert_all(tasks)
+  defp update_tasks(tasks_from_integration, local_tasks) do
+    Enum.reduce(tasks_from_integration, Ecto.Multi.new(), fn task, multi ->
+      {:ok, remote_id} = Map.fetch(task, :remote_id)
+
+      Ecto.Multi.update(
+        multi,
+        {:task, remote_id},
+        Enum.find(local_tasks, fn t -> t.remote_id == remote_id end)
+        |> Ecto.Changeset.change(task)
+      )
+    end)
   end
 
   defp now() do
     NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+  end
+
+  defp find_tasks_to_delete(task_ids_to_delete) do
+    from(t in Task, where: t.remote_id in ^task_ids_to_delete)
+  end
+
+  defp parse_multi_info(multi_info) do
+    &{
+      deleted: Map.fetch(multi_info, :delete_all)[0],
+      inserted: Map.fetch(multi_info, :delete_all)[0]
+   }
   end
 end
