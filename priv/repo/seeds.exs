@@ -13,7 +13,7 @@ integration_source = %TodoistIntegration.IntegrationSources.IntegreationSource{n
 integration_source = TodoistIntegration.Repo.insert!(integration_source)
 
 integration_source_user = %TodoistIntegration.IntegrationSourceUsers.IntegrationSourceUser{
-  source_api_key: "PUT YOUR TODOIST KEY HERE",
+  source_api_key: "e06f7d4e01bd7b5216201e2f6340ba92277aa5d4",
   integration_source: integration_source
 }
 

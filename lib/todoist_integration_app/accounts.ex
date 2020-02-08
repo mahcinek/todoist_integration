@@ -162,7 +162,7 @@ defmodule TodoistIntegration.Accounts do
   def synch_all do
     list_users()
     |> preload_source_associations()
-    |> Enum.each(synch())
+    |> Enum.each(fn u -> synch(u) end)
   end
 
   def synch(user) do

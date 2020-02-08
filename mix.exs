@@ -65,7 +65,7 @@ defmodule TodoistIntegration.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       "test:prepare": ["ecto.create --quiet"],
-      espec: ["ecto.setup", "espec"]
+      espec: ["ecto.reset", "espec"]
     ]
   end
 end

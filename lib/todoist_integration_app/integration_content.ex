@@ -107,13 +107,28 @@ defmodule TodoistIntegration.IntegrationContent do
   def deal_with_tasks(integration_source, user, token) do
     tasks = IntegrationSources.get_tasks(integration_source.name, token)
     insert_tasks(tasks, user, integration_source)
+    tasks
   end
 
   defp insert_tasks(tasks, user, integration_source) do
-    tasks
-    |> Enum.map(fn t ->
-      %{task | user_id: user.id, integration_source_id: integration_source.id}
-    end)
-    |> Repo.insert!()
+    tasks =
+      tasks
+      |> Enum.map(fn t ->
+        Map.merge(t, %{
+          user_id: user.id,
+          integration_source_id: integration_source.id,
+          inserted_at: now(),
+          updated_at: now()
+        })
+      end)
+
+    IO.inspect(tasks)
+
+    Task
+    |> Repo.insert_all(tasks)
+  end
+
+  defp now() do
+    NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
   end
 end

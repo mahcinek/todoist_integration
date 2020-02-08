@@ -103,12 +103,14 @@ defmodule TodoistIntegration.IntegrationSources do
     IntegreationSource.changeset(integreation_source, %{})
   end
 
-  def get_tasks(token, integration_source_name) do
+  def get_tasks(integration_source_name, token) do
     apply(
-      "TodoistIntegration.IntegrationSources.Connections." <>
-        Macro.camelize(integration_source_name),
-      "call",
-      token
+      Module.concat([
+        "TodoistIntegration.IntegrationSources.Connections",
+        Macro.camelize(integration_source_name)
+      ]),
+      :call,
+      [token]
     )
   end
 end

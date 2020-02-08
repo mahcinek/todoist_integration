@@ -4,8 +4,8 @@ defmodule TodoistIntegration.Repo.Migrations.CreateTasks do
   def change do
     create table(:tasks, primary_key: false) do
       add :id, :binary_id, primary_key: true
-      add :remote_id, :integer
-      add :name, :text
+      add :remote_id, :text
+      add :content, :text
       add :user_id, references(:users, on_delete: :nothing, type: :binary_id)
 
       add :integration_source_id,

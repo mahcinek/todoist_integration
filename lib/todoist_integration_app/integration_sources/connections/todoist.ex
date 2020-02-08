@@ -1,17 +1,8 @@
 defmodule TodoistIntegration.IntegrationSources.Connections.Todoist do
   import TodoistIntegration.IntegrationSources.Connections.BaseConnection
+  alias TodoistIntegration.IntegrationContent.Task
 
-  @base_url ""
-
-  def client(base_url, token) do
-    middleware = [
-      {Tesla.Middleware.BaseUrl, base_url},
-      Tesla.Middleware.JSON,
-      {Tesla.Middleware.Headers, [{"authorization", "Bearer " <> token}]}
-    ]
-
-    Tesla.client(middleware)
-  end
+  @base_url "https://api.todoist.com/rest/v1/"
 
   def get_tasks(client) do
     case Tesla.get(client, "/tasks") do
@@ -21,9 +12,11 @@ defmodule TodoistIntegration.IntegrationSources.Connections.Todoist do
   end
 
   def call(user_token) do
-    @base_url
-    |> Todoist.client(user_token)
-    |> Todoist.get_tasks()
-    |> Enum.map(fn t -> %Task{name: Map.get(t, "content"), remote_id: Map.get(t, "id")} end)
+    user_token
+    |> client(@base_url)
+    |> get_tasks()
+    |> Enum.map(fn t ->
+      %{content: Map.get(t, "content"), remote_id: Map.get(t, "id") |> Integer.to_string()}
+    end)
   end
 end
