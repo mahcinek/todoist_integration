@@ -7,13 +7,14 @@ defmodule TaskControllerSpec do
 
   let(:conn, do: build_conn())
 
-  describe "index /api/tasks/search" do
+  describe "search /api/tasks/search" do
     let :response do
       conn() |> get(task_path(conn(), :search, params()))
     end
 
     let(:json_body, do: response() |> json_response(200))
     let(:response_tasks, do: json_body() |> Map.get("tasks"))
+
     let(:params) do
       %{
         name: "content",
@@ -34,9 +35,80 @@ defmodule TaskControllerSpec do
 
       let(:user, do: insert(:user))
       let(:jwt, do: Accounts.with_auth_token(user()).auth_token)
+      let!(:integration_source, do: insert(:integration_source, name: "todoist"))
 
-      it "returns status 200" do
-        expect(response().status |> to(be(200)))
+        let!(:integration_source_user) do
+          insert(:integration_source_user,
+            user_id: user().id,
+            integration_source_id: integration_source().id,
+            source_api_key: "key"
+          )
+        end
+
+        let!(:first_task) do
+          insert(:task,
+            remote_id: "123",
+            content: "content to find",
+            user_id: user().id,
+            integration_source_id: integration_source().id
+          )
+        end
+
+        let!(:sec_task) do
+          insert(:task,
+            remote_id: "123123",
+            content: "content to find",
+            user_id: user().id,
+            integration_source_id: integration_source().id
+          )
+        end
+
+        let(:tasks, do: [first_task(), sec_task()])
+
+        let(:tasks_maped) do
+          tasks()
+          |> Enum.map(fn task ->
+            %{
+              "id" => task.id,
+              "remote_id" => task.remote_id,
+              "name" => task.content,
+              "source" => integration_source().name
+            }
+          end)
+        end
+
+      describe "when params don't match any tasks" do
+        it "returns status 200" do
+          expect(response().status |> to(be(200)))
+        end
+
+        it "no tasks are returned" do
+          expect(response_tasks() |> to(be_empty()))
+        end
+      end
+
+      describe "when params there is only search by content" do
+        let(:params) do
+          %{
+            name: "content"
+          }
+        end
+
+        it "returns status 200" do
+          expect(response().status |> to(be(200)))
+        end
+
+        it "tasks are returned" do
+          expect(response_tasks() |> not_to(be_empty()))
+        end
+
+        it "tasks data matches" do
+          expect(
+            response_tasks()
+            |> pluck(["id", "remote_id", "name", "source"])
+            |> to(eq(tasks_maped()))
+          )
+        end
       end
     end
   end

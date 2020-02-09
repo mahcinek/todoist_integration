@@ -43,7 +43,7 @@ defmodule TodoistIntegrationWeb.TaskController do
     |> Enum.reduce(%{}, fn key, acc ->
       case key do
         "name" -> acc |> Map.merge(%{content: param_map |> Map.fetch!("name")})
-        "source" -> acc |> Map.merge(%{integration_source: param_map |> Map.fetch!("source")})
+        "source" -> acc |> Map.merge(%{source: param_map |> Map.fetch!("source")})
       end
     end)
   end
