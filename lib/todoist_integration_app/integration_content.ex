@@ -8,6 +8,8 @@ defmodule TodoistIntegration.IntegrationContent do
   alias TodoistIntegration.IntegrationSources
   alias TodoistIntegration.IntegrationContent.Task
 
+  @preload_associations [:integration_source]
+
   @doc """
   Returns the list of tasks.
 
@@ -19,6 +21,10 @@ defmodule TodoistIntegration.IntegrationContent do
   """
   def list_tasks do
     Repo.all(Task)
+  end
+
+  defp preload_source_associations(query) do
+    query |> Repo.preload(@preload_associations)
   end
 
   def list_tasks_by_user_and_integration_source(user_id, integration_source_id) do
@@ -51,6 +57,7 @@ defmodule TodoistIntegration.IntegrationContent do
   def search(%{content: content}, user_id) do
     from(t in Task, where: t.content == ^content and user_id == ^user_id)
     |> Repo.all()
+    |> preload_associations()
   end
 
   def search(%{source: source}, user_id) do
@@ -62,6 +69,7 @@ defmodule TodoistIntegration.IntegrationContent do
         search_by_integration_source_query(integration_source, user_id)
         |> filter_by_user(user_id)
         |> Repo.all()
+        |> preload_associations()
     end
   end
 
@@ -85,6 +93,7 @@ defmodule TodoistIntegration.IntegrationContent do
         |> filter_by_user(user_id)
         |> filter_by_content(content)
         |> Repo.all()
+        |> preload_associations()
     end
   end
 

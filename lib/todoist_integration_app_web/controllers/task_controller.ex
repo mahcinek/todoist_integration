@@ -8,8 +8,9 @@ defmodule TodoistIntegrationWeb.TaskController do
   action_fallback TodoistIntegrationWeb.FallbackController
 
   def search(conn, params) do
-    tasks = IntegrationContent.search(exchange_params(params))
-    render(conn, "index.json", tasks: tasks)
+    user = Guardian.Plug.current_resource(conn)
+    tasks = IntegrationContent.search(exchange_params(params), user.id)
+    render(conn, "search.json", tasks: tasks)
   end
 
   def synch(conn, _params) do
