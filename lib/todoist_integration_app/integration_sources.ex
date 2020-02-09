@@ -36,6 +36,8 @@ defmodule TodoistIntegration.IntegrationSources do
   """
   def get_integreation_source!(id), do: Repo.get!(IntegreationSource, id)
 
+  def get_integreation_source_by_name!(name), do: Repo.get_by(IntegreationSource, %{name: name})
+
   @doc """
   Creates a integreation_source.
 

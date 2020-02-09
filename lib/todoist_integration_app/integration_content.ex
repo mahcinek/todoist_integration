@@ -48,6 +48,51 @@ defmodule TodoistIntegration.IntegrationContent do
 
   def get_task_for_user!(id, user_id), do: Repo.get_by!(Task, %{id: id, user_id: user_id})
 
+  def search(%{content: content}, user_id) do
+    from(t in Task, where: t.content == ^content and user_id == ^user_id)
+    |> Repo.all()
+  end
+
+  def search(%{source: source}, user_id) do
+    case IntegrationSources.get_integreation_source_by_name(source) do
+      nil ->
+        []
+
+      integration_source ->
+        search_by_integration_source_query(integration_source, user_id)
+        |> filter_by_user(user_id)
+        |> Repo.all()
+    end
+  end
+
+  defp search_by_integration_source_query(integration_source) do
+    integration_source_id = integration_source.id
+    from(t in Task, where: t.integration_source_id == ^integration_source_id)
+  end
+
+  defp filter_by_user(query, user_id) do
+    query
+    |> where([task], task.user_id == ^user_id)
+  end
+
+  def search(%{source: source, content: content}, user_id) do
+    case IntegrationSources.get_integreation_source_by_name(source) do
+      nil ->
+        []
+
+      integration_source ->
+        search_by_integration_source_query(integration_source, user_id)
+        |> filter_by_user(user_id)
+        |> filter_by_content(content)
+        |> Repo.all()
+    end
+  end
+
+  defp filter_by_content(query, content) do
+    query
+    |> where([task], task.content == ^content)
+  end
+
   @doc """
   Creates a task.
 

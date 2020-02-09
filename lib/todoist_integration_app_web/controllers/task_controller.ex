@@ -7,8 +7,8 @@ defmodule TodoistIntegrationWeb.TaskController do
 
   action_fallback TodoistIntegrationWeb.FallbackController
 
-  def search(conn, _params) do
-    tasks = IntegrationContent.list_tasks()
+  def search(conn, params) do
+    tasks = IntegrationContent.search(exchange_params(params))
     render(conn, "index.json", tasks: tasks)
   end
 
@@ -30,5 +30,20 @@ defmodule TodoistIntegrationWeb.TaskController do
   defp filter_incoming_params(params) do
     params
     |> Map.take(["content"])
+  end
+
+  defp exchange_params(params) do
+    param_map =
+      params
+      |> Map.take(["name", "source"])
+
+    param_map
+    |> Map.keys()
+    |> Enum.reduce(%{}, fn key, acc ->
+      case key do
+        "name" -> acc |> Map.merge(%{content: param_map |> Map.fetch!("name")})
+        "source" -> acc |> Map.merge(%{integration_source: param_map |> Map.fetch!("source")})
+      end
+    end)
   end
 end
