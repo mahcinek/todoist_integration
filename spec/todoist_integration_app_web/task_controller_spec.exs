@@ -48,7 +48,7 @@ defmodule TaskControllerSpec do
     end
 
     let(:json_body, do: response() |> json_response(200))
-    let(:response_tasks, do: json_body() |> Map.get("data"))
+    let(:response_task, do: json_body() |> Map.get("data"))
     let(:task_id, do: "id")
 
     describe "when there is no auth key provided" do
@@ -69,6 +69,10 @@ defmodule TaskControllerSpec do
 
       it "returns status 200" do
         expect(response().status |> to(be(200)))
+      end
+
+      it "updates task content" do
+        expect(response_task() |> Map.fetch!("content") |> to(eq("new content")))
       end
     end
   end

@@ -29,6 +29,6 @@ defmodule TodoistIntegrationWeb.TaskController do
 
   defp filter_incoming_params(params) do
     params
-    |> Map.take([:content])
+    |> Map.take(["content"])
   end
 end
