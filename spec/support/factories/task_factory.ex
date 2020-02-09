@@ -8,7 +8,7 @@ defmodule TodoistIntegrationSpec.TaskFactory do
       def task_factory do
         %Task{
           content: sequence(:external_key, &"Task #{&1}"),
-          remote_id: 123
+          remote_id: "123"
         }
       end
     end

@@ -18,7 +18,8 @@ defmodule TodoistIntegrationWeb.TaskController do
   end
 
   def update(conn, %{"id" => id, "task" => task_params}) do
-    task = IntegrationContent.get_task!(id)
+    user = Guardian.Plug.current_resource(conn)
+    task = IntegrationContent.get_task_for_user!(id, user.id)
 
     with {:ok, %Task{} = task} <-
            IntegrationContent.update_task(task, task_params |> filter_incoming_params()) do

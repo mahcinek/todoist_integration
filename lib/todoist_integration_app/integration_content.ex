@@ -46,6 +46,8 @@ defmodule TodoistIntegration.IntegrationContent do
   """
   def get_task!(id), do: Repo.get!(Task, id)
 
+  def get_task_for_user!(id, user_id), do: Repo.get_by!(Task, %{id: id, user_id: user_id})
+
   @doc """
   Creates a task.
 
