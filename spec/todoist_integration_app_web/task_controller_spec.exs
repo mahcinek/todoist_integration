@@ -36,11 +36,19 @@ defmodule TaskControllerSpec do
       let(:user, do: insert(:user))
       let(:jwt, do: Accounts.with_auth_token(user()).auth_token)
       let!(:integration_source, do: insert(:integration_source, name: "todoist"))
+      let!(:integration_source_2, do: insert(:integration_source, name: "nottodoist"))
 
         let!(:integration_source_user) do
           insert(:integration_source_user,
             user_id: user().id,
             integration_source_id: integration_source().id,
+            source_api_key: "key"
+          )
+        end
+        let!(:integration_source_user2) do
+          insert(:integration_source_user,
+            user_id: user().id,
+            integration_source_id: integration_source_2().id,
             source_api_key: "key"
           )
         end
@@ -57,9 +65,18 @@ defmodule TaskControllerSpec do
         let!(:sec_task) do
           insert(:task,
             remote_id: "123123",
-            content: "content to find",
+            content: "content",
             user_id: user().id,
             integration_source_id: integration_source().id
+          )
+        end
+
+        let!(:task_diff_source) do
+          insert(:task,
+            remote_id: "1231233",
+            content: "task",
+            user_id: user().id,
+            integration_source_id: integration_source_2().id
           )
         end
 
@@ -108,6 +125,121 @@ defmodule TaskControllerSpec do
             |> pluck(["id", "remote_id", "name", "source"])
             |> to(eq(tasks_maped()))
           )
+        end
+      end
+
+      describe "when params there is only search by source" do
+        describe "params match two tasks form todoist" do
+          let(:params) do
+            %{
+              source: "todoist"
+            }
+          end
+
+          it "returns status 200" do
+            expect(response().status |> to(be(200)))
+          end
+
+          it "tasks are returned" do
+            expect(response_tasks() |> not_to(be_empty()))
+          end
+
+          it "tasks data matches" do
+            expect(
+              response_tasks()
+              |> pluck(["id", "remote_id", "name", "source"])
+              |> to(eq(tasks_maped()))
+            )
+          end
+        end
+
+        describe "params match task from different source" do
+          let(:params) do
+            %{
+              source: "nottodoist"
+            }
+          end
+          let(:tasks, do: [task_diff_source()])
+          let(:tasks_maped) do
+            tasks()
+            |> Enum.map(fn task ->
+              %{
+                "id" => task.id,
+                "remote_id" => task.remote_id,
+                "name" => task.content,
+                "source" => integration_source_2().name
+              }
+            end)
+          end
+
+          it "returns status 200" do
+            expect(response().status |> to(be(200)))
+          end
+
+          it "tasks are returned" do
+            expect(response_tasks() |> not_to(be_empty()))
+          end
+
+          it "tasks data matches" do
+            expect(
+              response_tasks()
+              |> pluck(["id", "remote_id", "name", "source"])
+              |> to(eq(tasks_maped()))
+            )
+          end
+        end
+      end
+
+      describe "when params there is search by content and source" do
+        describe "params match both tasks" do
+          let(:params) do
+            %{
+              source: "todoist",
+              name: "c"
+            }
+          end
+
+          it "returns status 200" do
+            expect(response().status |> to(be(200)))
+          end
+
+          it "tasks are returned" do
+            expect(response_tasks() |> not_to(be_empty()))
+          end
+
+          it "tasks data matches" do
+            expect(
+              response_tasks()
+              |> pluck(["id", "remote_id", "name", "source"])
+              |> to(eq(tasks_maped()))
+            )
+          end
+        end
+
+        describe "params match one task" do
+          let(:params) do
+            %{
+              source: "todoist",
+              name: "find"
+            }
+          end
+          let(:tasks, do: [first_task()])
+
+          it "returns status 200" do
+            expect(response().status |> to(be(200)))
+          end
+
+          it "tasks are returned" do
+            expect(response_tasks() |> not_to(be_empty()))
+          end
+
+          it "tasks data matches" do
+            expect(
+              response_tasks()
+              |> pluck(["id", "remote_id", "name", "source"])
+              |> to(eq(tasks_maped()))
+            )
+          end
         end
       end
     end
