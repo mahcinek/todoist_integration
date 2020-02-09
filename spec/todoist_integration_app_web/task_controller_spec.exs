@@ -9,11 +9,17 @@ defmodule TaskControllerSpec do
 
   describe "index /api/tasks/search" do
     let :response do
-      conn() |> get(task_path(conn(), :search))
+      conn() |> get(task_path(conn(), :search, params()))
     end
 
     let(:json_body, do: response() |> json_response(200))
-    let(:response_tasks, do: json_body() |> Map.get("data"))
+    let(:response_tasks, do: json_body() |> Map.get("tasks"))
+    let(:params) do
+      %{
+        name: "content",
+        source: "source"
+      }
+    end
 
     describe "when there is no auth key provided" do
       it_behaves_like(Return401ResponseSpec)
