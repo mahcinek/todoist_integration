@@ -13,7 +13,7 @@ defmodule TodoistIntegrationWeb.IntegreationSourceController do
   end
 
   def synch(conn, _params) do
-    Accounts.sych_all()
+    Accounts.synch_all()
     send_resp(conn, :ok, "")
   end
 

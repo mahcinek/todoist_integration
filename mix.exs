@@ -63,8 +63,8 @@ defmodule TodoistIntegration.MixProject do
   defp aliases do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-      "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test:prepare": ["ecto.create --quiet"],
+      "ecto.reset": ["ecto.drop", "test:prepare"],
+      "test:prepare": ["ecto.create --quiet", "ecto.migrate --quiet"],
       espec: ["ecto.reset", "espec"]
     ]
   end

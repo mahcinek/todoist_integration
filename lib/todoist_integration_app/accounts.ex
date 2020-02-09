@@ -162,13 +162,20 @@ defmodule TodoistIntegration.Accounts do
   def synch_all do
     list_users()
     |> preload_source_associations()
-    |> Enum.each(fn u -> synch(u) end)
+    |> Enum.map(fn u -> synch(u) end)
+    |> List.flatten()
+    |> Enum.reduce(%{created: 0, updated: 0, deleted: 0}, fn map_to_add, acc ->
+      Map.merge(map_to_add, acc, fn _k, v1, v2 ->
+        v1 + v2
+      end)
+    end)
   end
 
   def synch(user) do
     user.integration_source_users
-    |> Enum.each(fn isu ->
+    |> Enum.map(fn isu ->
       IntegrationContent.deal_with_tasks(isu.integration_source, user, isu.source_api_key)
+      |> elem(1)
     end)
   end
 end

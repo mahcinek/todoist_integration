@@ -5,6 +5,8 @@ defmodule TodoistIntegration.IntegrationSources.Connections.Todoist do
   @base_url "https://api.todoist.com/rest/v1/"
 
   def get_tasks(client) do
+    {:ok, w} = Tesla.get(client, "/tasks")
+
     case Tesla.get(client, "/tasks") do
       {:ok, response} -> response.body
       {:error, errors} -> {:error, errors}

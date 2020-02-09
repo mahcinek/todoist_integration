@@ -5,6 +5,8 @@ defmodule TodoistIntegrationSpec.Factory do
 
   use TodoistIntegrationSpec.{
     UserFactory,
-    IntegreationSourceFactory
+    IntegreationSourceFactory,
+    TaskFactory,
+    IntegrationSourceUserFactory
   }
 end

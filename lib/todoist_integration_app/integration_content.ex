@@ -162,13 +162,19 @@ defmodule TodoistIntegration.IntegrationContent do
   defp update_tasks(tasks_from_integration, local_tasks) do
     Enum.reduce(tasks_from_integration, Ecto.Multi.new(), fn task, multi ->
       {:ok, remote_id} = Map.fetch(task, :remote_id)
+      {:ok, content} = Map.fetch(task, :content)
+      local_task = Enum.find(local_tasks, fn t -> t.remote_id == remote_id end)
 
-      Ecto.Multi.update(
-        multi,
-        {:task, remote_id},
-        Enum.find(local_tasks, fn t -> t.remote_id == remote_id end)
-        |> Ecto.Changeset.change(task)
-      )
+      unless content == local_task.content do
+        Ecto.Multi.update(
+          multi,
+          {:task, remote_id},
+          local_task
+          |> Ecto.Changeset.change(task)
+        )
+      else
+        multi
+      end
     end)
   end
 
@@ -181,9 +187,17 @@ defmodule TodoistIntegration.IntegrationContent do
   end
 
   defp parse_multi_info(multi_info) do
-    &{
-      deleted: Map.fetch(multi_info, :delete_all)[0],
-      inserted: Map.fetch(multi_info, :delete_all)[0]
-   }
+    map_size = Map.keys(multi_info) |> length()
+
+    %{
+      deleted: Map.fetch!(multi_info, :delete_all) |> elem(0),
+      created: Map.fetch!(multi_info, :insert_all) |> elem(0),
+      updated:
+        if map_size > 2 do
+          map_size - 2
+        else
+          0
+        end
+    }
   end
 end

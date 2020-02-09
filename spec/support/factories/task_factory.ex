@@ -3,7 +3,7 @@ defmodule TodoistIntegrationSpec.TaskFactory do
 
   defmacro __using__(_opts) do
     quote do
-      TodoistIntegration.IntegrationContent.Task
+      alias TodoistIntegration.IntegrationContent.Task
 
       def task_factory do
         %Task{

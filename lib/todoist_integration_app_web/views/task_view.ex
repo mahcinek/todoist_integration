@@ -11,6 +11,6 @@ defmodule TodoistIntegrationWeb.TaskView do
   end
 
   def render("task.json", %{task: task}) do
-    %{id: task.id, remote_id: task.remote_id, name: task.content}
+    %{id: task.id, remote_id: task.remote_id, content: task.content}
   end
 end
