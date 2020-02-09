@@ -1,4 +1,4 @@
-defmodule UserSpec do
+defmodule AccountsSpec do
   use ESpec, model: TodoistIntegration.Accounts.User
   alias TodoistIntegration.Accounts
 
