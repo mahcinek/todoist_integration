@@ -46,6 +46,7 @@ defmodule TaskControllerSpec do
         content: "new content"
       }
     end
+
     let(:json_body, do: response() |> json_response(200))
     let(:response_tasks, do: json_body() |> Map.get("data"))
     let(:task_id, do: "id")
