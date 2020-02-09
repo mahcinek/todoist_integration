@@ -5,8 +5,6 @@ defmodule TodoistIntegration.IntegrationSources do
 
   import Ecto.Query, warn: false
   alias TodoistIntegration.Repo
-  alias TodoistIntegration.Accounts
-
   alias TodoistIntegration.IntegrationSources.IntegreationSource
 
   @doc """
