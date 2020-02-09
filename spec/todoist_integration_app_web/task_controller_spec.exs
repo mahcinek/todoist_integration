@@ -38,61 +38,62 @@ defmodule TaskControllerSpec do
       let!(:integration_source, do: insert(:integration_source, name: "todoist"))
       let!(:integration_source_2, do: insert(:integration_source, name: "nottodoist"))
 
-        let!(:integration_source_user) do
-          insert(:integration_source_user,
-            user_id: user().id,
-            integration_source_id: integration_source().id,
-            source_api_key: "key"
-          )
-        end
-        let!(:integration_source_user2) do
-          insert(:integration_source_user,
-            user_id: user().id,
-            integration_source_id: integration_source_2().id,
-            source_api_key: "key"
-          )
-        end
+      let!(:integration_source_user) do
+        insert(:integration_source_user,
+          user_id: user().id,
+          integration_source_id: integration_source().id,
+          source_api_key: "key"
+        )
+      end
 
-        let!(:first_task) do
-          insert(:task,
-            remote_id: "123",
-            content: "content to find",
-            user_id: user().id,
-            integration_source_id: integration_source().id
-          )
-        end
+      let!(:integration_source_user2) do
+        insert(:integration_source_user,
+          user_id: user().id,
+          integration_source_id: integration_source_2().id,
+          source_api_key: "key"
+        )
+      end
 
-        let!(:sec_task) do
-          insert(:task,
-            remote_id: "123123",
-            content: "content",
-            user_id: user().id,
-            integration_source_id: integration_source().id
-          )
-        end
+      let!(:first_task) do
+        insert(:task,
+          remote_id: "123",
+          content: "content to find",
+          user_id: user().id,
+          integration_source_id: integration_source().id
+        )
+      end
 
-        let!(:task_diff_source) do
-          insert(:task,
-            remote_id: "1231233",
-            content: "task",
-            user_id: user().id,
-            integration_source_id: integration_source_2().id
-          )
-        end
+      let!(:sec_task) do
+        insert(:task,
+          remote_id: "123123",
+          content: "content",
+          user_id: user().id,
+          integration_source_id: integration_source().id
+        )
+      end
 
-        let(:tasks, do: [first_task(), sec_task()])
+      let!(:task_diff_source) do
+        insert(:task,
+          remote_id: "1231233",
+          content: "task",
+          user_id: user().id,
+          integration_source_id: integration_source_2().id
+        )
+      end
 
-        let(:tasks_maped) do
-          tasks()
-          |> Enum.map(fn task ->
-            %{
-              "id" => task.id,
-              "remote_id" => task.remote_id,
-              "name" => task.content,
-              "source" => integration_source().name
-            }
-          end)
-        end
+      let(:tasks, do: [first_task(), sec_task()])
+
+      let(:tasks_maped) do
+        tasks()
+        |> Enum.map(fn task ->
+          %{
+            "id" => task.id,
+            "remote_id" => task.remote_id,
+            "name" => task.content,
+            "source" => integration_source().name
+          }
+        end)
+      end
 
       describe "when params don't match any tasks" do
         it "returns status 200" do
@@ -159,7 +160,9 @@ defmodule TaskControllerSpec do
               source: "nottodoist"
             }
           end
+
           let(:tasks, do: [task_diff_source()])
+
           let(:tasks_maped) do
             tasks()
             |> Enum.map(fn task ->
@@ -223,6 +226,7 @@ defmodule TaskControllerSpec do
               name: "find"
             }
           end
+
           let(:tasks, do: [first_task()])
 
           it "returns status 200" do

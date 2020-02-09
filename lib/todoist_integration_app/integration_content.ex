@@ -69,7 +69,10 @@ defmodule TodoistIntegration.IntegrationContent do
   end
 
   def search(%{content: content}, user_id) do
-    from(t in Task, where: like(t.content, ^"%#{String.replace(content, "%", "\\%")}%") and t.user_id == ^user_id)
+    from(t in Task,
+      where:
+        like(t.content, ^"%#{String.replace(content, "%", "\\%")}%") and t.user_id == ^user_id
+    )
     |> Repo.all()
     |> preload_associations()
   end
