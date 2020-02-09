@@ -1,7 +1,5 @@
 defmodule UserSpec do
   use ESpec, model: TodoistIntegration.Accounts.User
-  import Tesla.Mock
-
   alias TodoistIntegration.Accounts
 
   import TodoistIntegrationSpec.Factory
@@ -112,7 +110,7 @@ defmodule UserSpec do
         )
       end
 
-      it "updates both tasks from mock" do
+      it "deletes old and creates new tasks from mock" do
         expect(created()) |> to(eq({:ok, 2}))
         expect(deleted()) |> to(eq({:ok, 2}))
       end

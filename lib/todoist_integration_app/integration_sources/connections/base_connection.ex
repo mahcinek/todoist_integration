@@ -1,5 +1,5 @@
 defmodule TodoistIntegration.IntegrationSources.Connections.BaseConnection do
-  def client(token, base_url) do
+  def bearer_token_client(token, base_url) do
     middleware = [
       {Tesla.Middleware.BaseUrl, base_url},
       Tesla.Middleware.JSON,
