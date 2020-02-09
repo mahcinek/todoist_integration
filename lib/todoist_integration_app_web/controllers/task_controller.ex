@@ -3,12 +3,18 @@ defmodule TodoistIntegrationWeb.TaskController do
 
   alias TodoistIntegration.IntegrationContent
   alias TodoistIntegration.IntegrationContent.Task
+  alias TodoistIntegration.IntegrationContent.Accounts
 
   action_fallback TodoistIntegrationWeb.FallbackController
 
   def search(conn, _params) do
     tasks = IntegrationContent.list_tasks()
     render(conn, "index.json", tasks: tasks)
+  end
+
+  def synch(conn, _params) do
+    synch_summary = Accounts.synch()
+    render(conn, "synch.json", synch_summary: synch_summary)
   end
 
   def update(conn, %{"id" => id, "task" => task_params}) do

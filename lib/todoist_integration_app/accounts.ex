@@ -171,7 +171,7 @@ defmodule TodoistIntegration.Accounts do
     end)
   end
 
-  def synch(user) do
+  defp synch(user) do
     user.integration_source_users
     |> Enum.map(fn isu ->
       IntegrationContent.deal_with_tasks(isu.integration_source, user, isu.source_api_key)

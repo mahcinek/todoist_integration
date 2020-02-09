@@ -1,12 +1,13 @@
 defmodule Return401ResponseSpec do
   use ESpec, shared: true
-  import Phoenix.ConnTest, only: [assert_error_sent: 2]
-
   let_overridable([:response])
+  let(:json_body, do: response().resp_body |> Jason.decode!())
 
-  it "returns 401 response" do
-    assert_error_sent(401, fn ->
-      response()
-    end)
+  it "returns status 401" do
+    expect(response().status |> to(be(401)))
+  end
+
+  it "returns meaningful error message" do
+    expect(json_body() |> to(eq(%{"message" => "unauthenticated"})))
   end
 end

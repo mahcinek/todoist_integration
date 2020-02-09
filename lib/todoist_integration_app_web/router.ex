@@ -18,9 +18,8 @@ defmodule TodoistIntegrationWeb.Router do
   scope "/api", TodoistIntegrationWeb do
     pipe_through [:jwt_authenticated, :api]
     post("/synch", TaskController, :synch)
+    get("/tasks/search", TaskController, :search)
 
-    resources "/tasks", TaskController, only: [:update] do
-      get("/search", TaskController, :search)
-    end
+    resources "/tasks", TaskController, only: [:update]
   end
 end

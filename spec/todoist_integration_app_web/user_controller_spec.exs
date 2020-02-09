@@ -37,7 +37,8 @@ defmodule UserControllerSpec do
           |> pluck(["auth_token"])
           |> List.first()
           |> Map.fetch!("auth_token")
-          |> not_to(be_empty()))
+          |> not_to(be_empty())
+        )
       end
     end
   end

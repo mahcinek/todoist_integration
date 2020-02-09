@@ -10,6 +10,10 @@ defmodule TodoistIntegrationWeb.TaskView do
     %{data: render_one(task, TaskView, "task.json")}
   end
 
+  def render("synch.json", %{synch_summary: synch_summary}) do
+    synch_summary
+  end
+
   def render("task.json", %{task: task}) do
     %{id: task.id, remote_id: task.remote_id, content: task.content}
   end
