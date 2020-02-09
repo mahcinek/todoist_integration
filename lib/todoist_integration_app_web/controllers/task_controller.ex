@@ -3,7 +3,7 @@ defmodule TodoistIntegrationWeb.TaskController do
 
   alias TodoistIntegration.IntegrationContent
   alias TodoistIntegration.IntegrationContent.Task
-  alias TodoistIntegration.IntegrationContent.Accounts
+  alias TodoistIntegration.Accounts
 
   action_fallback TodoistIntegrationWeb.FallbackController
 
@@ -13,7 +13,7 @@ defmodule TodoistIntegrationWeb.TaskController do
   end
 
   def synch(conn, _params) do
-    synch_summary = Accounts.synch()
+    synch_summary = Accounts.synch_all()
     render(conn, "synch.json", synch_summary: synch_summary)
   end
 
