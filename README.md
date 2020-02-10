@@ -22,7 +22,7 @@ All of the endpoints under `/api` require Bearer token
 Implemented endpoints:
 
   * `POST /api/synch` 
-  * `GET /api/search` (optional params: name, source) 
+  * `GET /api/tasks/search` (optional params: name, source) 
   * `PATCH /api/tasks/:task_id` (params: content) 
 
 
