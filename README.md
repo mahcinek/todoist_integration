@@ -1,6 +1,6 @@
-## TodoistIntegration
+# TodoistIntegration
 
-# DEPS
+## DEPS
 * Elixir `1.9.4`
 * Postgresql `> 9.6`
 
@@ -15,7 +15,7 @@ To start your TodoistIntegration server:
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-# Info
+## Info
 
 You can get your API key (Bearer token) to the secure part of the API under `GET localhost:4000/unsecureapi/users`
 
@@ -30,6 +30,6 @@ Implemented endpoints:
 
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
-# Disclaimer
+## Disclaimer
 
 There are several areas like tests, data fetching (could be better in at least one place) and docs when the project can/should be extended before running in production.
