@@ -249,6 +249,18 @@ defmodule TaskControllerSpec do
     end
   end
 
+  before_all do
+    # basic remote todoist return mock
+    allow(
+      TodoistIntegration.IntegrationSources.Connections.Todoist
+      |> to(
+        accept(:call_update, fn _param1, _param2, _param3 ->
+          {:ok, ""}
+        end)
+      )
+    )
+  end
+
   describe "update /api/tasks/:id" do
     let :response do
       conn()
@@ -278,7 +290,24 @@ defmodule TaskControllerSpec do
 
       let(:user, do: insert(:user))
       let(:jwt, do: Accounts.with_auth_token(user()).auth_token)
-      let(:task_to_update, do: insert(:task, user_id: user().id))
+      let(:integration_source, do: insert(:integration_source, name: "todoist"))
+
+      let!(:integration_source_user) do
+        insert(:integration_source_user,
+          source_api_key: "e06f7d4e01bd7b5216201e2f6340ba92277aa5d4",
+          user_id: user().id,
+          integration_source_id: integration_source().id
+        )
+      end
+
+      let(:task_to_update) do
+        insert(:task,
+          user_id: user().id,
+          integration_source_id: integration_source().id,
+          remote_id: "123"
+        )
+      end
+
       let(:task_id, do: task_to_update().id)
 
       it "returns status 200" do

@@ -155,7 +155,7 @@ defmodule TodoistIntegration.Accounts do
     |> Enum.map(fn u -> with_auth_token(u) end)
   end
 
-  defp preload_source_associations(query) do
+  def preload_source_associations(query) do
     query |> Repo.preload(@preload_source_associations)
   end
 

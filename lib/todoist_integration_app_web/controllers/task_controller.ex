@@ -23,7 +23,11 @@ defmodule TodoistIntegrationWeb.TaskController do
     task = IntegrationContent.get_task_for_user!(id, user.id)
 
     with {:ok, %Task{} = task} <-
-           IntegrationContent.update_task(task, task_params |> filter_incoming_params()) do
+           IntegrationContent.update_task_local_and_remote(
+             task,
+             task_params |> filter_incoming_params(),
+             user
+           ) do
       render(conn, "show.json", task: task)
     end
   end

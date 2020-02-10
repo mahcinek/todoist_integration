@@ -5,7 +5,7 @@ defmodule AccountsSpec do
   import TodoistIntegrationSpec.Factory
   import TodoistIntegrationSpec.Helpers, only: [pluck: 2]
 
-  before do
+  before_all do
     # basic remote todoist return mock
     allow(
       TodoistIntegration.IntegrationSources.Connections.Todoist

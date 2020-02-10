@@ -6,6 +6,7 @@ defmodule TodoistIntegration.IntegrationContent do
   import Ecto.Query, warn: false
   alias TodoistIntegration.Repo
   alias TodoistIntegration.IntegrationSources
+  alias TodoistIntegration.IntegrationSourceUsers.IntegrationSourceUser
   alias TodoistIntegration.IntegrationContent.Task
 
   @preload_associations [:integration_source]
@@ -90,6 +91,14 @@ defmodule TodoistIntegration.IntegrationContent do
     end
   end
 
+  def search(_params, user_id) do
+    from(t in Task,
+      where: t.user_id == ^user_id
+    )
+    |> Repo.all()
+    |> preload_associations()
+  end
+
   defp search_by_integration_source_query(integration_source) do
     integration_source_id = integration_source.id
     from(t in Task, where: t.integration_source_id == ^integration_source_id)
@@ -141,6 +150,61 @@ defmodule TodoistIntegration.IntegrationContent do
     |> Repo.update()
   end
 
+  def update_task_local_and_remote(%Task{} = task, attrs, user) do
+    integration_source = get_integration_source(task)
+
+    user_token =
+      Repo.get_by(IntegrationSourceUser, %{
+        integration_source_id: integration_source.id,
+        user_id: user.id
+      }).source_api_key
+
+    attrs = %{content: Map.fetch!(attrs, "content")}
+
+    transaction =
+      Ecto.Multi.new()
+      |> Ecto.Multi.run(:remote_update, fn _repo, _params ->
+        remote_update(
+          task.remote_id,
+          attrs |> Map.fetch!(:content),
+          integration_source.name,
+          user_token
+        )
+      end)
+      |> Ecto.Multi.update(
+        :update,
+        task
+        |> Ecto.Changeset.change(attrs)
+      )
+      |> Repo.transaction()
+
+    case transaction do
+      {:ok, info} ->
+        {:ok, info |> Map.fetch!(:update)}
+    end
+  end
+
+  defp remote_update(remote_id, content, integration_source_name, user_token) do
+    apply(
+      Module.concat([
+        "TodoistIntegration.IntegrationSources.Connections",
+        Macro.camelize(integration_source_name)
+      ]),
+      :call_update,
+      [user_token, remote_id, content]
+    )
+
+    {:ok, nil}
+  end
+
+  defp get_integration_source(task) do
+    task_with_integration =
+      task
+      |> preload_associations
+
+    task_with_integration.integration_source
+  end
+
   @doc """
   Deletes a task.
 
@@ -187,14 +251,14 @@ defmodule TodoistIntegration.IntegrationContent do
     {tasks_to_update, tasks_to_insert} =
       Enum.split_with(tasks_form_integration, fn t -> t.remote_id in task_ids_to_update end)
 
-    a =
+    transaction =
       Ecto.Multi.new()
       |> Ecto.Multi.delete_all(:delete_all, find_tasks_to_delete(task_ids_to_delete))
       |> Ecto.Multi.append(insert_tasks(tasks_to_insert, user, integration_source))
       |> Ecto.Multi.append(update_tasks(tasks_to_update, local_tasks_after_removal))
       |> Repo.transaction()
 
-    case a do
+    case transaction do
       {:ok, multi_info} -> {:ok, parse_multi_info(multi_info)}
       {:error, errors} -> {:error, errors}
     end
