@@ -4,6 +4,8 @@
 * Elixir `1.9.4`
 * Postgresql `> 9.6`
 
+## How to run
+
 To start your TodoistIntegration server:
 
   * Install dependencies with `mix deps.get`
