@@ -15,7 +15,7 @@ To start your TodoistIntegration server:
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-You can get your API key to the secure part of the API under `GET localhost:4000/unsecureapi/users`
+You can get your API key (Bearer token) to the secure part of the API under `GET localhost:4000/unsecureapi/users`
 
 All of the endpoints under `/api` require Bearer token
 
