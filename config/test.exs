@@ -2,8 +2,8 @@ use Mix.Config
 
 # Configure your database
 config :todoist_integration_app, TodoistIntegration.Repo,
-  username: "mpiwek",
-  password: "piwek",
+  username: "postgres",
+  password: "postgres",
   database: "todoist_integration_app_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
