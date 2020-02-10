@@ -250,7 +250,7 @@ defmodule TaskControllerSpec do
   end
 
   before_all do
-    # basic remote todoist return mock
+    # basic remote todoist update mock
     allow(
       TodoistIntegration.IntegrationSources.Connections.Todoist
       |> to(
