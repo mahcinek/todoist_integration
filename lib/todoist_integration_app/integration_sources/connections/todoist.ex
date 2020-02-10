@@ -20,8 +20,6 @@ defmodule TodoistIntegration.IntegrationSources.Connections.Todoist do
   end
 
   def call(user_token) do
-    IO.inspect("aa")
-
     user_token
     |> bearer_token_client(@base_url)
     |> get_tasks()
@@ -36,7 +34,6 @@ defmodule TodoistIntegration.IntegrationSources.Connections.Todoist do
       |> bearer_token_client(@base_url)
       |> update_task(remote_id, content)
 
-    IO.inspect("dupa")
     {:ok, response}
   end
 end
